@@ -14,6 +14,8 @@ use sync_time::{
     relative_to_home,
 };
 
+type InqCallback = dyn Fn(&mut UserConfig, &str);
+
 fn upload_timewarrior_data(ftp_stream: &mut FtpStream) {
     // TODO: connection works! We can upload the data now
     // Make the server sync-up the files instead of choosing upload/download
@@ -30,8 +32,6 @@ fn upload_timewarrior_data(ftp_stream: &mut FtpStream) {
     print!("r: {:?}", r);
     ftp_stream.put("/sda1/timewar/blah.data", &mut c).unwrap();
 }
-
-fn handle_config_file() {}
 
 fn interactive_create_config() -> Result<(), InquireError> {
     let default_path = relative_to_home(".timewarrior-sync/config.toml");
@@ -53,30 +53,17 @@ fn interactive_create_config() -> Result<(), InquireError> {
     println!("{}", msg);
 
     let mut config = UserConfig::new();
-    let questions: [(&str, &dyn Fn(&mut UserConfig, &str)); 4] = [
+    let questions: [(&str, &InqCallback); 4] = [
         (
             "What is the hostname of your FTP server? ",
             &|config, input| {
                 config.set_hostname(input.to_string());
             },
         ),
-        (
-            "What is the port of your FTP server? ",
-            &|config, input| loop {
-                let port: u16 = input.parse().unwrap_or_else(|_| {
-                    let msg = "Please enter a valid port number".bright_red();
-                    println!("{}", msg);
-                    let input = Text::new("What is the port of your FTP server? ")
-                        .with_default("21")
-                        .prompt()
-                        .unwrap();
-                    input.parse().unwrap()
-                });
-
-                config.set_port(port);
-                break;
-            },
-        ),
+        ("What is the port of your FTP server? ", &|config, input| {
+            let input = input.parse::<u16>().expect("Invalid port specified");
+            config.set_port(input);
+        }),
         (
             "What is the username of your FTP server? ",
             &|config, input| {

@@ -18,6 +18,12 @@ pub struct UserConfig {
     pub password: Option<String>,
 }
 
+impl Default for UserConfig {
+    fn default() -> Self {
+        UserConfig::new()
+    }
+}
+
 impl UserConfig {
     pub fn new() -> Self {
         UserConfig {
