@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::{
     env,
     fs::{self, File},
-    io::{self, Read, Write},
+    io::{self, Write},
     path::Path,
 };
 
@@ -20,55 +20,55 @@ pub struct UserConfig {
 
 impl UserConfig {
     pub fn new() -> Self {
-        return UserConfig {
+        UserConfig {
             hostname: None,
             port: None,
             username: None,
             password: None,
-        };
+        }
     }
 
     pub fn validate(&self) -> bool {
-        return self.hostname.is_some()
+        self.hostname.is_some()
             && self.port.is_some()
             && self.username.is_some()
-            && self.password.is_some();
+            && self.password.is_some()
     }
 
     pub fn unwrap(&self) -> (String, u16, String, String) {
-        return (
+        (
             self.hostname.clone().unwrap(),
             self.port.unwrap(),
             self.username.clone().unwrap(),
             self.password.clone().unwrap(),
-        );
+        )
     }
 
     pub fn from_file<P: AsRef<Path>>(path: P) -> io::Result<Self> {
         let content = fs::read_to_string(path)?;
         let config: UserConfig =
             toml::from_str(&content).expect("Syntax error in configuration file");
-        return Ok(config);
+        Ok(config)
     }
 
     pub fn set_hostname(&mut self, hostname: String) -> &Self {
         self.hostname = Some(hostname);
-        return self;
+        self
     }
 
     pub fn set_port(&mut self, port: u16) -> &Self {
         self.port = Some(port);
-        return self;
+        self
     }
 
     pub fn set_username(&mut self, username: String) -> &Self {
         self.username = Some(username);
-        return self;
+        self
     }
 
     pub fn set_password(&mut self, password: String) -> &Self {
         self.password = Some(password);
-        return self;
+        self
     }
 }
 
@@ -105,7 +105,7 @@ pub fn fill_config_file(config_file: &mut File, config_data: &UserConfig) -> std
 /// ```
 pub fn config_file_present() -> bool {
     let config_path = config_file_path();
-    return File::open(config_path).is_ok();
+    File::open(config_path).is_ok()
 }
 
 pub fn config_file_path() -> String {
@@ -114,5 +114,5 @@ pub fn config_file_path() -> String {
         Err(_) => DEFAULT_CONFIG_LOCATION.to_string(),
     };
 
-    return relative_to_home(&config_path);
+    relative_to_home(&config_path)
 }

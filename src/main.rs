@@ -21,9 +21,9 @@ fn upload_timewarrior_data(ftp_stream: &mut FtpStream) {
     // build a absolute path from pwd() and the given path
     let home = env::var("HOME").expect("HOME not set");
     let path = format!("{}/.timewarrior/data", home);
-    let mut reader = BufReader::new(std::fs::File::open(path).unwrap());
+    let _reader = BufReader::new(std::fs::File::open(path).unwrap());
 
-    let path_base = "/sda1/timewar";
+    let _path_base = "/sda1/timewar";
     let r = ftp_stream.list(Some("/sda1/timewar")).unwrap();
 
     let mut c = Cursor::new("hello world".as_bytes());
@@ -70,7 +70,7 @@ fn interactive_create_config() -> Result<(), InquireError> {
                         .with_default("21")
                         .prompt()
                         .unwrap();
-                    return input.parse().unwrap();
+                    input.parse().unwrap()
                 });
 
                 config.set_port(port);
