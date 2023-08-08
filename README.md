@@ -12,6 +12,6 @@ This implementation takes a different approach, instead of `go` it's written in 
 
 - [x] Upload file to FTP server
 - [x] Download file from FTP server
-- [] Auto sync file with FTP server on specific commands
-- [] Web interface to interact with data
-- [] Different storage options (FTP, SFTP, Dropbox, Google Drive, ssh, etc)
+- [ ] Auto sync file with FTP server on specific commands
+- [ ] Web interface to interact with data
+- [ ] Different storage options (FTP, SFTP, Dropbox, Google Drive, ssh, etc)
